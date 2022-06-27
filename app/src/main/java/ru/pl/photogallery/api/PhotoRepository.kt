@@ -3,6 +3,9 @@ package ru.pl.photogallery.api
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
+import ru.pl.photogallery.utils.Constants.PHOTO_GALLERY_ITEM_PER_PAGE
+
+private const val TAG = "PhotoRepository"
 
 class PhotoRepository {
 
@@ -18,6 +21,16 @@ class PhotoRepository {
 
     suspend fun fetchPhotos(): List<GalleryItem> {
         return flickrApi.fetchPhotos().photos.galleryItems
+    }
+
+    //For Paging library
+    suspend fun fetchPhotos(page: Int): List<GalleryItem> {
+        val photosResponse = flickrApi.fetchPhotos(page, PHOTO_GALLERY_ITEM_PER_PAGE).photos
+        return if (page * PHOTO_GALLERY_ITEM_PER_PAGE > photosResponse.total) {
+            emptyList()
+        } else {
+            photosResponse.galleryItems
+        }
     }
 
 }
