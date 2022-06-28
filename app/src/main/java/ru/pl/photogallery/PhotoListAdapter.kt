@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.bumptech.glide.Glide
+import kotlinx.coroutines.withTimeoutOrNull
 import ru.pl.photogallery.api.GalleryItem
 import ru.pl.photogallery.databinding.ListItemGalleryBinding
 
@@ -32,9 +34,13 @@ class PhotoViewHolder(private val binding: ListItemGalleryBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(galleryItem: GalleryItem) {
-        binding.itemImageView.load(galleryItem.url) {
+        /*binding.itemImageView.load(galleryItem.url) {
             placeholder(R.drawable.placeholder_120_120)
-        }
+        }*/
+        Glide.with(binding.root.context)
+            .load(galleryItem.url)
+            .placeholder(R.drawable.placeholder_120_120)
+            .into(binding.itemImageView)
     }
 
 }
