@@ -16,14 +16,18 @@ interface FlickrApi {
     ): FlickrResponse
 
     @GET("services/rest/?method=flickr.photos.search")
-    suspend fun searchPhotos(@Query("text") query: String): FlickrResponse
+    suspend fun searchPhotos(
+        @Query("text") query: String,
+        @Query("safe_search") saveSearch: Int = 1
+    ): FlickrResponse
 
     //added for paging library
     @GET("services/rest/?method=flickr.photos.search")
     suspend fun searchPhotos(
         @Query("text") query: String,
         @Query("page") page: Int,
-        @Query("per_page") perPage: Int
+        @Query("per_page") perPage: Int,
+        @Query("safe_search") saveSearch: Int = 1
     ): FlickrResponse
 
 }

@@ -1,5 +1,9 @@
 package ru.pl.photogallery.api
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -30,23 +34,26 @@ class PhotoRepository {
         return flickrApi.fetchPhotos().photos.galleryItems
     }
 
-    //For Paging library todo should return Flow<PagingData<GalleryItem>>
-    suspend fun fetchPhotos(page: Int): List<GalleryItem> {
-        val photosResponse = flickrApi.fetchPhotos(page, PHOTO_GALLERY_ITEM_PER_PAGE).photos
-        return if (page * PHOTO_GALLERY_ITEM_PER_PAGE > photosResponse.total) {
-            emptyList()
-        } else {
-            photosResponse.galleryItems
-        }
+    //For Paging library
+    fun fetchPhotos(perPage: Int): Flow<PagingData<GalleryItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = perPage,
+                enablePlaceholders = false
+            ), pagingSourceFactory = { PagingSource(flickrApi, "") }).flow
     }
 
     suspend fun searchPhotos(query: String): List<GalleryItem> {
         return flickrApi.searchPhotos(query).photos.galleryItems
     }
 
-    //For Paging library todo should return Flow<PagingData<GalleryItem>>
-     suspend fun searchPhotos(query: String, page: Int): List<GalleryItem> {
-         return flickrApi.searchPhotos(query, page, PHOTO_GALLERY_ITEM_PER_PAGE).photos.galleryItems
-     }
+    //For Paging library
+    fun searchPhotos(query: String, perPage: Int): Flow<PagingData<GalleryItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = perPage,
+                enablePlaceholders = false
+            ), pagingSourceFactory = { PagingSource(flickrApi, query) }).flow
+    }
 
 }
