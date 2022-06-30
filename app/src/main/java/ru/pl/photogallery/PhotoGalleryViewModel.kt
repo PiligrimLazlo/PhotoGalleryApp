@@ -3,7 +3,10 @@ package ru.pl.photogallery
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import ru.pl.photogallery.api.GalleryItem
 import ru.pl.photogallery.api.PhotoRepository
@@ -36,6 +39,11 @@ class PhotoGalleryViewModel : ViewModel() {
                 }
             }
         }
+        viewModelScope.launch {
+            preferencesRepository.isPolling.collect { isPolling ->
+                _uiState.update { it.copy(isPolling = isPolling) }
+            }
+        }
     }
 
     fun setQuery(query: String) {
@@ -43,6 +51,12 @@ class PhotoGalleryViewModel : ViewModel() {
             preferencesRepository.setStoredQuery(query)
         }
     }
+
+     fun toggleIsPolling() {
+         viewModelScope.launch {
+             preferencesRepository.setPolling(!uiState.value.isPolling)
+         }
+     }
 
     private suspend fun fetchGalleryItems(query: String): List<GalleryItem> {
         return if (query.isNotEmpty()) {
@@ -68,5 +82,6 @@ class PhotoGalleryViewModel : ViewModel() {
 
 data class PhotoGalleryUiState(
     val images: List<GalleryItem> = listOf(),
-    val query: String = ""
+    val query: String = "",
+    val isPolling: Boolean = false
 )

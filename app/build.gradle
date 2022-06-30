@@ -78,4 +78,7 @@ dependencies {
     //DataStore (>= Shared Preferences)
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
 
+    //Worker (работа в фоне)
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+
 }

@@ -34,7 +34,6 @@ object GalleryItemComparator: DiffUtil.ItemCallback<GalleryItem>() {
     override fun areContentsTheSame(oldItem: GalleryItem, newItem: GalleryItem): Boolean {
         return oldItem == newItem
     }
-
 }
 
 

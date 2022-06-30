@@ -25,11 +25,12 @@ class PhotoRepository {
         flickrApi = retrofit.create()
     }
 
+    //simple loading a100 pictures
     suspend fun fetchPhotos(): List<GalleryItem> {
         return flickrApi.fetchPhotos().photos.galleryItems
     }
 
-    //For Paging library
+    //For Paging library todo should return Flow<PagingData<GalleryItem>>
     suspend fun fetchPhotos(page: Int): List<GalleryItem> {
         val photosResponse = flickrApi.fetchPhotos(page, PHOTO_GALLERY_ITEM_PER_PAGE).photos
         return if (page * PHOTO_GALLERY_ITEM_PER_PAGE > photosResponse.total) {
@@ -43,7 +44,7 @@ class PhotoRepository {
         return flickrApi.searchPhotos(query).photos.galleryItems
     }
 
-    //For Paging library
+    //For Paging library todo should return Flow<PagingData<GalleryItem>>
      suspend fun searchPhotos(query: String, page: Int): List<GalleryItem> {
          return flickrApi.searchPhotos(query, page, PHOTO_GALLERY_ITEM_PER_PAGE).photos.galleryItems
      }
